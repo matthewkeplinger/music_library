@@ -36,14 +36,22 @@ class SongDetail(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
     def get(self,request,pk):
+        """GET by ID endpoint"""
         song=self.get_song(pk)
         serializer=SongSerializer(song)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self,request,pk):
+        """PUT to update by ID endpoint"""
         song=self.get_song(pk)
         serializer = SongSerializer(song, data= request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self,request,pk):
+        """DELETE by ID endpoint"""
+        song=self.get_song(pk)
+        song.delete()
+        return Response(status=status.HTTP_200_OK)
