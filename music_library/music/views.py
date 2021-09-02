@@ -24,8 +24,6 @@ class SongList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
 class SongDetail(APIView):
         
     def get_song(self, pk):
@@ -54,4 +52,4 @@ class SongDetail(APIView):
         """DELETE by ID endpoint"""
         song=self.get_song(pk)
         song.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response(song.data, status=status.HTTP_200_OK)
