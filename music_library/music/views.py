@@ -18,11 +18,13 @@ class SongList(APIView):
 
     def post(self,request):
         """POST results to user with HTTP status messages upon success or fail"""
-        serializer = SongSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = SongSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SongDetail(APIView):
         
@@ -41,12 +43,14 @@ class SongDetail(APIView):
 
     def put(self,request,pk):
         """PUT to update by ID endpoint"""
-        song=self.get_song(pk)
-        serializer = SongSerializer(song, data= request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            song=self.get_song(pk)
+            serializer = SongSerializer(song, data= request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self,request,pk):
         """DELETE by ID endpoint"""
@@ -58,21 +62,21 @@ class SongDetail(APIView):
 
 class SongLikes(APIView):
     
-    def get_song(self,pk,title):
+    def get_song(self,pk):
         try: 
-            return Song.object(pk, title=title)
+            return Song.object(pk)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    def get(self,request,pk,title):
+    def get(self,request,pk):
         try:
-            song = self.get_object(pk, title=title)
+            song = self.get_object(pk)
             serializer = SongSerializer(song)
             return Response(serializer.data)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    def patch(self, request, pk, title):
+    def patch(self, request, pk):
         """PATCH to increment Song likes counter"""
         try:
             song= self.get_song(pk)
