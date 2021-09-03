@@ -52,4 +52,34 @@ class SongDetail(APIView):
         """DELETE by ID endpoint"""
         song=self.get_song(pk)
         song.delete()
-        return Response(song.data, status=status.HTTP_200_OK)
+        return Response(song.title, status=status.HTTP_200_OK)
+
+
+
+class SongLikes(APIView):
+    
+    def get_song(self,pk,title):
+        try: 
+            return Song.object(pk, title=title)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self,request,pk,title):
+        try:
+            song = self.get_object(pk, title=title)
+            serializer = SongSerializer(song)
+            return Response(serializer.data)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def patch(self, request, pk, title):
+        """PATCH to increment Song likes counter"""
+        try:
+            song= self.get_song(pk)
+            data = {"likes": song.likes + int(1)}
+            serializer = SongSerializer(song, data=data, partial=True)
+            if serializer.is_valid:
+                serializer.save()
+                return Response(serializer.data)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
