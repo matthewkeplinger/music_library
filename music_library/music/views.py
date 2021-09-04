@@ -5,9 +5,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import render
 
-
-
-
 class SongList(APIView):
     
     def get(self,request):
@@ -55,35 +52,6 @@ class SongDetail(APIView):
     def delete(self,request,pk):
         """DELETE by ID endpoint"""
         song=self.get_song(pk)
+        serializer = SongSerializer(song)
         song.delete()
-        return Response(song.title, status=status.HTTP_200_OK)
-
-
-
-class SongLikes(APIView):
-    
-    def get_song(self,pk):
-        try: 
-            return Song.object(pk)
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    def get(self,request,pk):
-        try:
-            song = self.get_object(pk)
-            serializer = SongSerializer(song)
-            return Response(serializer.data)
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    def patch(self, request, pk):
-        """PATCH to increment Song likes counter"""
-        try:
-            song= self.get_song(pk)
-            data = {"likes": song.likes + int(1)}
-            serializer = SongSerializer(song, data=data, partial=True)
-            if serializer.is_valid:
-                serializer.save()
-                return Response(serializer.data)
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.data, status=status.HTTP_200_OK)
