@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-g864dv_!%1-7jo+=clx%vt(0l%$l(ce$^wb9%6u39(*r$g3_21
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS = []
 
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'music'
 ]
 
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.milddleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'music_library.urls'
